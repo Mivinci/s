@@ -8,9 +8,20 @@ import (
 	"github.com/mivinci/shortid"
 )
 
+const (
+	TypeWeb int8 = iota
+	TypeIOS
+	TypeAndroid
+
+	StateOK int8 = iota
+	StateTerm
+)
+
 type App struct {
 	ID    int       `json:"id" storm:"increment"`
-	Uid   int       `json:"uid" storm:"unique"`
+	Uid   int       `json:"uid" storm:"index"`
+	Type  int8      `json:"type"`
+	State int8      `json:"state"`
 	Name  string    `json:"name" storm:"unique"`
 	Site  string    `json:"site"`
 	Key   string    `json:"key"`

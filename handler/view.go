@@ -14,6 +14,7 @@ import (
 type Template struct {
 	SubTitle string
 	Notice   Notice
+	User     model.User
 }
 
 type Notice struct {
@@ -105,7 +106,7 @@ func (v *View) Console(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t.SubTitle = user.Name
-	log.Debug(user, apps)
+	t.User = user
 	HTML(w, "console", &ConsoleTemplate{Template: t, User: user, Apps: apps})
 }
 

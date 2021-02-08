@@ -2,20 +2,32 @@
 <header class="header">
   <div class="container">
     <div class="align">
-      <a href="/">
-        <svg t="1611228709336" class="icon" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-          p-id="1320" width="40" height="40">
+      <a class="align" href="/">
+        <svg t="1612773919654" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          p-id="3269" width="40" height="40">
           <path
-            d="M527.57504 71.91552 24.38144 417.75616 24.38144 512l94.24384 0 0 440.0896 786.75456 0L905.37984 512l94.23872 0L999.61856 417.75616 527.57504 71.91552zM752.3072 660.17792l-174.67392 0 0 174.67392L446.05952 834.85184l0-174.67392L272.52224 660.17792l0-130.432 174.67392 0L447.19616 355.07712l130.43712 0 0 174.67392 174.67392 0L752.3072 660.17792z"
-            p-id="1321" fill="#4fc08d"></path>
+            d="M512 0c-105.6 0-208 32-294.4 92.8C134.4 150.4 70.4 233.6 32 329.6l-9.6 25.6h112l3.2-12.8c19.2-44.8 48-83.2 83.2-118.4 76.8-76.8 179.2-118.4 288-118.4S720 147.2 796.8 224s118.4 179.2 118.4 288-41.6 211.2-118.4 288-179.2 118.4-288 118.4-211.2-41.6-288-118.4c-35.2-35.2-60.8-73.6-83.2-118.4l-3.2-12.8h-112l9.6 25.6c35.2 96 99.2 176 185.6 236.8S406.4 1024 512 1024c281.6 0 512-230.4 512-512S793.6 0 512 0zM0 563.2h467.2L358.4 672l73.6 73.6 236.8-236.8L432 272l-76.8 73.6 108.8 108.8H0v108.8z"
+            fill="#ffffff" p-id="3270"></path>
         </svg>
       </a>
-      <form action="/notes" method="GET" id="form">
+      <form action="/" method="GET" id="form">
+        <input class="search-input" name="title" type="text" placeholder="输入应用名称进行搜索" autocomplete="off" />
       </form>
     </div>
     <div class="align">
-      <a class="btn btn-clean" href="/trash">回收站</a>
-      <a class="btn" href="/new">新建记录</a>
+      {{ if .User }}
+      <a class="btn btn-clean btn-reverse align" href="/console?uid={{ .User.ID }}">
+        <svg t="1612774170673" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          p-id="4222" width="24" height="24">
+          <path
+            d="M512 62.08A449.92 449.92 0 1 0 961.92 512 449.92 449.92 0 0 0 512 62.08z m0 135.04a135.04 135.04 0 1 1-135.04 135.04A134.72 134.72 0 0 1 512 197.12z m0 640a323.84 323.84 0 0 1-269.76-144.96c0-89.6 179.84-138.56 269.76-138.56s268.48 48.96 269.76 138.56A323.84 323.84 0 0 1 512 835.84z"
+            p-id="4223" fill="#ffffff"></path>
+        </svg>
+        {{ .User.Name }}
+      </a>
+      {{ else }}
+      <a class="btn btn-clean btn-reverse align" href="/transport">登录</a>
+      {{ end }}
     </div>
   </div>
 </header>

@@ -4,23 +4,32 @@
 {{ template "head" . }}
 
 <body>
-  {{ .User.ID }}
-  {{ .User.Name }}
-  {{ .User.Mail }}
-  {{ .User.Perm }}
-  {{ .User.Ctime }}
-
-  {{ if .Apps }}
-  {{ range .Apps }}
-  {{ .ID }}
-  {{ .Uid }}
-  {{ .Name }}
-  {{ .Site }}
-  {{ .Ctime }}
-  {{ .Key }}
-  {{ end }}
+  {{ template "header" . }}
+  <div class="view">
+    <main class="major">
+      <div class="card">
+        <div class="title align">
+          <span>我的应用</span>
+          <a href="/">创建应用</a>
+        </div>
+        {{ template "apps" . }}
+      </div>
+    </main>
+    <aside class="minor">
+      <div class="card">
+        <div class="title align">
+          <span>个人资料</span>
+          <a href="/">编辑</a>
+        </div>
+        <div class="field">UID {{ .User.ID }}</div>
+        <div class="field">昵称 <span>{{ .User.Name }}</span></div>
+        <div class="field">邮箱 <span>{{ .User.Mail }}</span></div>
+        <div class="field">权限 <span>{{ .User.Perm }}</span></div>
+        <div class="field">注册 <span>{{ .User.Ctime.Format "2006-01-02" }}</span></div>
+      </div>
+    </aside>
+  </div>
   {{ template "footer" . }}
-  {{ end }}
 </body>
 
 </html>

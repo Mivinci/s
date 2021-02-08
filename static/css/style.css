@@ -1,12 +1,13 @@
 html {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 body {
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 1000px;
   color: #24292e;
   height: 100%;
+  background-color: #f1f1f1;
 }
 
 a {
@@ -20,9 +21,10 @@ a {
   width: 100%;
   height: 5rem;
   color: #909090;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   border-bottom: 1px solid #f1f1f1;
-  background-color: #fff;
+  background-color: cadetblue;
+  z-index: 100;
 }
 
 .header-entity {
@@ -35,14 +37,18 @@ a {
 }
 
 .header .search-input {
-  width: 30rem;
+  width: 20rem;
   padding: 0.8rem 1.3rem;
-  border: 1px solid #ebebeb;
+  border: 1px solid #f1f1f1;
   border-radius: 100px;
-  background-color: #f6f6f6;
+  background-color: cadetblue;
   font-size: 1.2rem;
   color: #8590a6;
   outline: none;
+}
+
+.header .search-input::placeholder {
+  color: #fff;
 }
 
 .header .title-input {
@@ -95,6 +101,10 @@ a {
   background-color: transparent;
 }
 
+.btn-reverse {
+  color: #fff;
+}
+
 .btn-warn {
   color: red;
 }
@@ -114,9 +124,8 @@ a {
 
 .container {
   height: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 0 10px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -270,12 +279,12 @@ a {
 
 .auth .auth-title::after {
   display: block;
-    position: absolute;
-    bottom: 0;
-    content: "";
-    width: 100%;
-    height: 3px;
-    background-color: cadetblue;
+  position: absolute;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 3px;
+  background-color: cadetblue;
 }
 
 .auth .auth-submit {
@@ -340,3 +349,93 @@ a {
     display: none;
   }
 }
+
+.view {
+  display: flex;
+  margin-top: 1.767rem;
+}
+
+.major {
+  flex: 1 1 auto;
+}
+
+.minor {
+  position: sticky;
+  top: 5rem;
+  flex: 0 0 auto;
+  margin-left: 1rem;
+  width: 20rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 900px) {
+  .minor {
+    display: none;
+  }
+}
+
+.card {
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  padding-bottom: .6rem;
+}
+
+.view .title {
+  padding: 1.333rem;
+  font-size: 1.333rem;
+  font-weight: 600;
+  color: #31445b;
+  border-bottom: 1px solid rgba(230, 230, 231, 0.5);
+}
+
+.view .field {
+  padding: 0.8rem 1.333rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  color: #000;
+}
+
+.view .title {
+  justify-content: space-between;
+}
+
+.view .title a {
+  color: cadetblue;
+  text-decoration: none;
+}
+
+.view .field span {
+  margin-left: 10px;
+}
+
+.app-table {
+  width: 100%;
+  font-size: 1.15rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.app-table-head {
+  position: sticky;
+  top: 5rem;
+  background: rgba(208, 235, 236, 0.171);
+}
+
+.app-table-body>tr>td,
+.app-table-head>tr>th {
+  text-align: center;
+  padding: 12px 8px;
+  overflow-wrap: break-word;
+}
+
+.app-table-body {
+  padding: 0 .4rem;
+}
+
+.app-table-body a {
+  color: cadetblue;
+  text-decoration: none;
+}
+

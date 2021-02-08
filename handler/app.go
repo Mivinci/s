@@ -15,7 +15,7 @@ type App struct {
 }
 
 func (a *App) Init(name string) error {
-	return a.DB.Save(&model.App{Name: name, Uid: 1, Ctime: time.Now()})
+	return a.DB.Save(&model.App{Name: name, Uid: 1, Ctime: time.Now(), Type: model.TypeWeb, State: model.StateOK})
 }
 
 func (a *App) One(w http.ResponseWriter, r *http.Request) {
@@ -34,15 +34,16 @@ func (a *App) One(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) Create(w http.ResponseWriter, r *http.Request) {
-	uid, err := strconv.Atoi(r.PostFormValue("uid"))
+	uid, err1 := strconv.Atoi(r.PostFormValue("uid"))
+	typ, err2 := strconv.Atoi(r.PostFormValue("type"))
 	name, site := r.PostFormValue("name"), r.PostFormValue("site")
 	log.Debugf("uid(%d) name(%s) site(%s)\n", uid, name, site)
-	if err != nil || name == "" || site == "" {
+	if err1 != nil || err2 != nil || name == "" || site == "" {
 		Error(w, ErrParam)
 		return
 	}
 	key := randStr12()
-	ap := model.App{Uid: uid, Name: name, Site: site, Ctime: time.Now(), Key: key}
+	ap := model.App{Uid: uid, Name: name, Site: site, Ctime: time.Now(), Type: int8(typ), Key: key}
 	if err := a.DB.Save(&ap); err != nil {
 		log.Error(err)
 		Error(w, err)

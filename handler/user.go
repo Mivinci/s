@@ -53,7 +53,7 @@ func (u *User) One(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *User) Update(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PostFormValue("id"))
+	id, err := strconv.Atoi(r.PostFormValue("uid"))
 	if err != nil {
 		Error(w, ErrParam)
 		return
