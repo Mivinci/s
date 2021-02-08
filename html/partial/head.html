@@ -1,0 +1,12 @@
+{{ define "head" }}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {{ if .SubTitle }}
+  <title>{{ .SubTitle }} | 绿椰子</title>
+  {{ else }}
+  <title>绿椰子</title>
+  {{ end }}
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+{{ end }}

@@ -1,0 +1,27 @@
+{{ define "console" }}
+<!DOCTYPE html>
+<html lang="en">
+{{ template "head" . }}
+
+<body>
+  {{ .User.ID }}
+  {{ .User.Name }}
+  {{ .User.Mail }}
+  {{ .User.Perm }}
+  {{ .User.Ctime }}
+
+  {{ if .Apps }}
+  {{ range .Apps }}
+  {{ .ID }}
+  {{ .Uid }}
+  {{ .Name }}
+  {{ .Site }}
+  {{ .Ctime }}
+  {{ .Key }}
+  {{ end }}
+  {{ template "footer" . }}
+  {{ end }}
+</body>
+
+</html>
+{{ end }}
