@@ -20,7 +20,7 @@
       <td>{{ .Key }}</td>
       <td><a href="{{ .Site }}" target="_blank" rel="noopener noreferrer">{{ .Site }}</a></td>
       <td>{{ template "app-state" . }}</td>
-      <td>{{ .Ctime.Format "2006-01-02" }}</td>
+      <td>{{ duration .Ctime }}</td>
       <td></td>
     </tr>
     {{ end }}
@@ -63,9 +63,9 @@
 
 {{ define "app-state" }}
 {{ if eq .State 0 }}
-正常
+<span style="color: cadetblue;">正常</span>
 {{ else if eq .State 1 }}
-停止
+<span style="color: red;">停止</span>
 {{ else }}
 未知
 {{ end }}

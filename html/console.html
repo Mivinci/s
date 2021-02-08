@@ -25,7 +25,7 @@
         <div class="field">昵称 <span>{{ .User.Name }}</span></div>
         <div class="field">邮箱 <span>{{ .User.Mail }}</span></div>
         <div class="field">权限 <span>{{ .User.Perm }}</span></div>
-        <div class="field">注册 <span>{{ .User.Ctime.Format "2006-01-02" }}</span></div>
+        <div class="field">注册 <span>{{ duration .User.Ctime }}</span></div>
       </div>
     </aside>
   </div>

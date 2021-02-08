@@ -364,7 +364,7 @@ a {
   top: 5rem;
   flex: 0 0 auto;
   margin-left: 1rem;
-  width: 20rem;
+  width: 18rem;
   line-height: 1.2;
 }
 
@@ -375,7 +375,7 @@ a {
 }
 
 .card {
-  border-radius: 10px;
+  border-radius: 4px;
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
   padding-bottom: .6rem;

@@ -11,7 +11,7 @@ import (
 	"github.com/mivinci/s/model"
 )
 
-var ErrParam = errors.New("invalid post parameter")
+var ErrParam = errors.New("invalid parameter")
 
 type User struct {
 	DB *storm.DB

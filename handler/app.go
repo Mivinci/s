@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -34,33 +36,37 @@ func (a *App) One(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) Create(w http.ResponseWriter, r *http.Request) {
-	uid, err1 := strconv.Atoi(r.PostFormValue("uid"))
-	typ, err2 := strconv.Atoi(r.PostFormValue("type"))
-	name, site := r.PostFormValue("name"), r.PostFormValue("site")
-	log.Debugf("uid(%d) name(%s) site(%s)\n", uid, name, site)
-	if err1 != nil || err2 != nil || name == "" || site == "" {
+	var app model.App
+	err := FromBody(r, &app)
+	if err != nil {
+		log.Debug("decode from request body: ", err)
 		Error(w, ErrParam)
 		return
 	}
-	key := randStr12()
-	ap := model.App{Uid: uid, Name: name, Site: site, Ctime: time.Now(), Type: int8(typ), Key: key}
-	if err := a.DB.Save(&ap); err != nil {
+	if app.Site == "" {
+		Error(w, errors.New("app missing field `site`"))
+		return
+	}
+	app.Ctime = time.Now()
+	app.Key = randStr12()
+	log.Debug("create app: ", app)
+	if err := a.DB.Save(&app); err != nil {
 		log.Error(err)
 		Error(w, err)
 		return
 	}
-	JSON(w, &ap, nil)
+	JSON(w, &app, nil)
 }
 
 func (a *App) Update(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PostFormValue("id"))
+	var app model.App
+	err := FromBody(r, &app)
 	if err != nil {
-		Error(w, ErrParam)
+		log.Debug("decode from request body: ", err)
+		Error(w, err)
 		return
 	}
-	name, site := r.PostFormValue("name"), r.PostFormValue("site")
-	ap := model.App{ID: id, Name: name, Site: site}
-	if err := a.DB.Update(&ap); err != nil {
+	if err := a.DB.Update(&app); err != nil {
 		log.Error(err)
 		Error(w, err)
 		return
@@ -74,6 +80,8 @@ func (a *App) Delete(w http.ResponseWriter, r *http.Request) {
 		Error(w, ErrParam)
 		return
 	}
+
+	// TODO: check if the user owns the app
 	if err := a.DB.DeleteStruct(&model.App{ID: id}); err != nil {
 		log.Error(err)
 		Error(w, ErrParam)
@@ -94,4 +102,15 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		Error(w, ErrHTTPMethod)
 	}
+}
+
+func FromBody(r *http.Request, app *model.App) error {
+	dec := json.NewDecoder(r.Body)
+	defer r.Body.Close()
+	if err := dec.Decode(app); err != nil {
+		return err
+	}
+	// app.ID = 0
+	app.Key = ""
+	return nil
 }
