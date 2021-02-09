@@ -5,11 +5,11 @@
     <tr>
       <th>类型</th>
       <th>名称</th>
-      <th>密钥</th>
       <th>网址</th>
+      <th>操作码</th>
       <th>运行状态</th>
       <th>创建时间</th>
-      <th>操作</th>
+      <th>序列号</th>
     </tr>
   </thead>
   <tbody class="app-table-body">
@@ -17,11 +17,11 @@
     <tr>
       <td>{{ template "app-type" . }}</td>
       <td>{{ .Name }}</td>
-      <td>{{ .ID}}</td>
       <td><a href="{{ .Site }}" target="_blank" rel="noopener noreferrer">{{ .Site }}</a></td>
+      <td>{{ .Code }}</td>
       <td>{{ template "app-state" . }}</td>
       <td>{{ duration .Ctime }}</td>
-      <td></td>
+      <td>{{ .ID }}</td>
     </tr>
     {{ end }}
   </tbody>
@@ -67,6 +67,6 @@
 {{ else if eq .State 1 }}
 <span style="color: red;">停止</span>
 {{ else }}
-未知
+<span style="color: lightgray;">未知</span>
 {{ end }}
 {{ end }}

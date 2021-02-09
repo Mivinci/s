@@ -2,6 +2,7 @@ package generater
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -30,7 +31,7 @@ func (g Generater) Token(mail string) (token auth.Token, err error) {
 			return
 		}
 		// help unknown user to register
-		user = model.User{Mail: mail, Ctime: time.Now()}
+		user = model.User{Mail: mail, Ctime: time.Now(), Name: namegen(12)}
 		if err = g.User.DB.Save(&user); err != nil {
 			log.Debug("generater.Token: create user error due to ", err)
 			return
@@ -66,4 +67,10 @@ func codegen(n int) string {
 		code[i] = byte(rand.Int31n(10) + '0')
 	}
 	return string(code)
+}
+
+func namegen(n int) string {
+	b := make([]byte, n/2)
+	rand.Read(b) // nolint:errcheck
+	return fmt.Sprintf("%x", b)
 }

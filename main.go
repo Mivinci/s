@@ -40,7 +40,7 @@ func main() {
 		log.Fatal("open bolt:", err)
 	}
 
-	app := handler.App{DB: db}
+	app := handler.App{DB: db, Key: key}
 	user := handler.User{DB: db}
 	view := handler.View{App: &app, User: &user, CodeLen: codeLen}
 

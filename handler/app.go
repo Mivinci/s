@@ -2,12 +2,10 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/asdine/storm/v3"
 	"github.com/mivinci/log"
-	"github.com/mivinci/s/auth"
 	"github.com/mivinci/s/filter"
 	"github.com/mivinci/s/model"
 )
@@ -18,60 +16,54 @@ type App struct {
 }
 
 func (a *App) Init(name string) error {
+	if err := a.DB.Init(model.App{}); err != nil {
+		return err
+	}
 	return a.DB.Save(&model.App{Name: name, Uid: 1, Ctime: time.Now(), Type: model.TypeWeb, State: model.StateOK})
 }
 
 func (a *App) One(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	app := new(model.App)
+	err := filter.UnmarshalApp(r, a.Key, app, "ID", "Uid", "Key", "Code")
 	if err != nil {
-		Error(w, ErrParam)
+		log.Debug("App.One: ", err)
+		Error(w, err)
 		return
 	}
-	var ap model.App
-	if err := a.DB.One("ID", id, &ap); err != nil {
+	if err := a.DB.One("ID", app.ID, app); err != nil {
 		log.Error(err)
 		Error(w, err)
 		return
 	}
-	JSON(w, &ap, nil)
+	JSON(w, app, nil)
 }
 
 func (a *App) Create(w http.ResponseWriter, r *http.Request) {
-	uid, ok := filter.FromConext(r)
-	if !ok {
-		Error(w, auth.ErrPermDenied)
-		return
-	}
-
 	app := new(model.App)
-	err := app.AccessAndRead(r, uid, "Site")
+	err := filter.UnmarshalApp(r, "", app, "Site")
+
 	if err != nil {
-		log.Debug("App.Update: ", err)
+		log.Debug("App.Create: ", err)
 		Error(w, err)
 		return
 	}
 
 	app.Ctime = time.Now()
-	log.Debug("App.Create: ", app)
-	// if err := a.DB.Save(&app); err != nil {
-	// 	log.Error(err)
-	// 	Error(w, err)
-	// 	return
-	// }
+	app.SetCode()
+	if err := a.DB.Save(app); err != nil {
+		log.Error(err)
+		Error(w, err)
+		return
+	}
 	app.SetKey(a.Key)
-
-	JSON(w, &app, nil)
+	log.Debug("App.Create: ", app)
+	JSON(w, app, nil)
 }
 
 func (a *App) Update(w http.ResponseWriter, r *http.Request) {
-	uid, ok := filter.FromConext(r)
-	if !ok {
-		Error(w, auth.ErrPermDenied)
-		return
-	}
-
 	app := new(model.App)
-	err := app.AccessAndRead(r, uid, "ID", "Uid", "Key")
+	err := filter.UnmarshalApp(r, a.Key, app, "ID", "Uid", "Key", "Code")
+
 	if err != nil {
 		log.Debug("App.Update: ", err)
 		Error(w, err)
@@ -87,14 +79,9 @@ func (a *App) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) Delete(w http.ResponseWriter, r *http.Request) {
-	uid, ok := filter.FromConext(r)
-	if !ok {
-		Error(w, auth.ErrPermDenied)
-		return
-	}
-
 	app := new(model.App)
-	err := app.AccessAndRead(r, uid, "ID", "Uid", "Key")
+	err := filter.UnmarshalApp(r, a.Key, app, "ID", "Uid", "Key", "Code")
+
 	if err != nil {
 		log.Debug("App.Update: ", err)
 		Error(w, err)

@@ -113,7 +113,6 @@ func (a *Auth) transport(w http.ResponseWriter, r *http.Request, next http.Handl
 	}
 
 	final := token.Final()
-
 	log.Debug("auth.transport: final token: ", final)
 
 	r = WithContext(r, Metadata{HeaderToken: token})

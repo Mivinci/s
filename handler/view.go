@@ -8,6 +8,7 @@ import (
 	"github.com/asdine/storm/v3"
 	"github.com/mivinci/log"
 	"github.com/mivinci/s/auth"
+	"github.com/mivinci/s/filter"
 	"github.com/mivinci/s/model"
 )
 
@@ -56,7 +57,7 @@ func (v *View) Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: check if ts is in a period of now
+	// TODO: check if 'ts' is in a period of now
 
 	var app model.App
 	if err := v.App.DB.One("ID", appid, &app); err != nil {
@@ -76,16 +77,9 @@ func (v *View) Auth(w http.ResponseWriter, r *http.Request) {
 
 func (v *View) Console(w http.ResponseWriter, r *http.Request) {
 	t := Template{SubTitle: "用户"}
-
-	md, ok := auth.FromContext(r)
+	uid, ok := filter.FromConext(r)
 	if !ok {
 		HTML(w, "error", &ErrorTemplate{Template: t, Error: auth.ErrMetadata.Error()})
-		return
-	}
-
-	uid, ok := md["uid"].(int)
-	if !ok {
-		HTML(w, "error", &ErrorTemplate{Template: t, Error: "unknown uid"})
 		return
 	}
 

@@ -21,6 +21,18 @@ func IsZeroOrInvalid(v interface{}, fields ...string) error {
 	return nil
 }
 
+// func exportalize(s string) string {
+// 	b := strings.Builder{}
+// 	b.Grow(len(s))
+// 	c := s[0]
+// 	if 'a' <= c && c <= 'z' {
+// 		c -= 'a' - 'A'
+// 	}
+// 	b.WriteByte(c)
+// 	b.WriteString(s[1:])
+// 	return b.String()
+// }
+
 func RandStr(n int) string {
 	b := make([]byte, n/2)
 	rand.Read(b) // nolint:errcheck
