@@ -1,19 +1,20 @@
 package handler
 
 import (
-	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/asdine/storm/v3"
 	"github.com/mivinci/log"
+	"github.com/mivinci/s/auth"
+	"github.com/mivinci/s/filter"
 	"github.com/mivinci/s/model"
 )
 
 type App struct {
-	DB *storm.DB
+	DB  *storm.DB
+	Key string
 }
 
 func (a *App) Init(name string) error {
@@ -36,38 +37,49 @@ func (a *App) One(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) Create(w http.ResponseWriter, r *http.Request) {
-	var app model.App
-	err := FromBody(r, &app)
+	uid, ok := filter.FromConext(r)
+	if !ok {
+		Error(w, auth.ErrPermDenied)
+		return
+	}
+
+	app := new(model.App)
+	err := app.AccessAndRead(r, uid, "Site")
 	if err != nil {
-		log.Debug("decode from request body: ", err)
-		Error(w, ErrParam)
-		return
-	}
-	if app.Site == "" {
-		Error(w, errors.New("app missing field `site`"))
-		return
-	}
-	app.Ctime = time.Now()
-	app.Key = randStr12()
-	log.Debug("create app: ", app)
-	if err := a.DB.Save(&app); err != nil {
-		log.Error(err)
+		log.Debug("App.Update: ", err)
 		Error(w, err)
 		return
 	}
+
+	app.Ctime = time.Now()
+	log.Debug("App.Create: ", app)
+	// if err := a.DB.Save(&app); err != nil {
+	// 	log.Error(err)
+	// 	Error(w, err)
+	// 	return
+	// }
+	app.SetKey(a.Key)
+
 	JSON(w, &app, nil)
 }
 
 func (a *App) Update(w http.ResponseWriter, r *http.Request) {
-	var app model.App
-	err := FromBody(r, &app)
+	uid, ok := filter.FromConext(r)
+	if !ok {
+		Error(w, auth.ErrPermDenied)
+		return
+	}
+
+	app := new(model.App)
+	err := app.AccessAndRead(r, uid, "ID", "Uid", "Key")
 	if err != nil {
-		log.Debug("decode from request body: ", err)
+		log.Debug("App.Update: ", err)
 		Error(w, err)
 		return
 	}
-	if err := a.DB.Update(&app); err != nil {
-		log.Error(err)
+
+	if err := a.DB.Update(app); err != nil {
+		log.Error("App.Update: ", err)
 		Error(w, err)
 		return
 	}
@@ -75,16 +87,25 @@ func (a *App) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) Delete(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	uid, ok := filter.FromConext(r)
+	if !ok {
+		Error(w, auth.ErrPermDenied)
+		return
+	}
+
+	app := new(model.App)
+	err := app.AccessAndRead(r, uid, "ID", "Uid", "Key")
 	if err != nil {
-		Error(w, ErrParam)
+		log.Debug("App.Update: ", err)
+		Error(w, err)
 		return
 	}
 
 	// TODO: check if the user owns the app
-	if err := a.DB.DeleteStruct(&model.App{ID: id}); err != nil {
+	if err := a.DB.DeleteStruct(app); err != nil {
 		log.Error(err)
 		Error(w, ErrParam)
+		return
 	}
 	OK(w)
 }
@@ -102,15 +123,4 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		Error(w, ErrHTTPMethod)
 	}
-}
-
-func FromBody(r *http.Request, app *model.App) error {
-	dec := json.NewDecoder(r.Body)
-	defer r.Body.Close()
-	if err := dec.Decode(app); err != nil {
-		return err
-	}
-	// app.ID = 0
-	app.Key = ""
-	return nil
 }

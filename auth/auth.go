@@ -17,15 +17,16 @@ const (
 )
 
 var (
-	ErrID         = errors.New("empty id provided")
-	ErrKey        = errors.New("empty key provided")
-	ErrQuery      = errors.New("incompleted get query")
-	ErrParam      = errors.New("incompleted parameter")
-	ErrAuthHeader = errors.New("empty auth header")
-	ErrHTTPMethod = errors.New("bad http method")
-	ErrCodeMatch  = errors.New("code is not correct")
-	ErrPermDenied = errors.New("permission denied")
-	ErrMetadata   = errors.New("no metadata in request context")
+	ErrID              = errors.New("empty id provided")
+	ErrKey             = errors.New("empty key provided")
+	ErrQuery           = errors.New("incompleted get query")
+	ErrParam           = errors.New("incompleted parameter")
+	ErrAuthHeader      = errors.New("empty auth header")
+	ErrHTTPMethod      = errors.New("bad http method")
+	ErrCodeMatch       = errors.New("code is not correct")
+	ErrPermDenied      = errors.New("permission denied")
+	ErrAccessForbidden = errors.New("forbidden access")
+	ErrMetadata        = errors.New("no metadata in request context")
 )
 
 type Auth struct {

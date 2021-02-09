@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"html/template"
@@ -102,11 +101,3 @@ func Env(key, def string) string {
 	}
 	return env
 }
-
-func randStr(n int) string {
-	b := make([]byte, n/2)
-	rand.Read(b) // nolint:errcheck
-	return fmt.Sprintf("%x", b)
-}
-
-func randStr12() string { return randStr(12) }

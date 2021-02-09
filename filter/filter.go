@@ -2,49 +2,61 @@ package filter
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/mivinci/log"
 	"github.com/mivinci/s/auth"
-	"github.com/mivinci/s/handler"
-	"github.com/mivinci/shortid"
+	"github.com/mivinci/s/metadata"
 )
 
 var _ auth.Filter = Filter{}
 
-type Filter struct {
-	User *handler.User
-}
+type Filter struct{}
 
 func (f Filter) Private(r *http.Request, token auth.Token) (*http.Request, error) {
-	uid := r.URL.Query().Get("uid")
-	if uid == "" {
-		uid = r.PostFormValue("uid")
-	}
-
-	id, err := strconv.Atoi(uid)
-	if err != nil {
-		return r, auth.ErrQuery
-	}
-
 	perm, ok := token.Meta["perm"]
 	if !ok {
-		return r, auth.ErrTokenIncompleted
+		return r, auth.ErrTokenPerm
 	}
 
-	if perm.(float64) > 1 {
+	uid, ok := token.Meta["uid"]
+	if !ok {
+		return r, auth.ErrTokenUid
+	}
+
+	id, ok := metadata.Int(uid)
+	if !ok {
+		return r, auth.ErrTokenDecode
+	}
+
+	pm, ok := metadata.Int(perm)
+	if !ok {
+		return r, auth.ErrTokenDecode
+	}
+
+	if pm > 1 {
 		log.Debug("filter.Private: pass with superior permission ", perm)
-		return withContext(r, id)
+		return WithContext(r, id), nil
 	}
 
-	if shortid.String(id) != token.ID {
-		return r, auth.ErrPermDenied
-	}
 	log.Debug("filter.Private: pass with matched uid: ", uid)
-	return withContext(r, id)
+	return WithContext(r, id), nil
 }
 
-func withContext(r *http.Request, id int) (*http.Request, error) {
-	r = auth.WithContext(r, auth.Metadata{"uid": id})
-	return r, nil
+// WithContext injects uid to the flow of request
+func WithContext(r *http.Request, uid int) *http.Request {
+	return auth.WithContext(r, auth.Metadata{"uid": uid})
+}
+
+// FromConext extracts uid from token
+func FromConext(r *http.Request) (uid int, ok bool) {
+	md, ok := auth.FromContext(r)
+	if !ok {
+		return
+	}
+	id, ok := md["uid"]
+	if !ok {
+		return
+	}
+	uid, ok = id.(int)
+	return
 }

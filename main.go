@@ -54,7 +54,7 @@ func main() {
 		auth.WithTokenTTL(tokenTTL),
 		auth.WithSender(sender.Sender{}),
 		auth.WithRender(render.Render{}),
-		auth.WithFilter(filter.Filter{User: &user}),
+		auth.WithFilter(filter.Filter{}),
 		auth.WithGenerater(generater.Generater{Key: key, User: &user, TokenTTL: tokenTTL, CodeLen: codeLen}),
 	)
 

@@ -14,10 +14,11 @@ import (
 )
 
 var (
-	ErrTokenDecode      = errors.New("token cannot be decoded")
-	ErrTokenNotmatch    = errors.New("token does not match")
-	ErrTokenExpired     = errors.New("token is dead")
-	ErrTokenIncompleted = errors.New("incompleted token field")
+	ErrTokenDecode   = errors.New("token cannot be decoded")
+	ErrTokenNotmatch = errors.New("token does not match")
+	ErrTokenExpired  = errors.New("token is dead")
+	ErrTokenPerm     = errors.New("token missing field perm")
+	ErrTokenUid      = errors.New("token missing field uid")
 )
 
 type Token struct {

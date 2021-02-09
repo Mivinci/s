@@ -43,7 +43,7 @@ func (g Generater) Token(mail string) (token auth.Token, err error) {
 		Iat: time.Now().Unix(),
 		Ein: int64(g.TokenTTL / time.Second),
 		Meta: auth.Metadata{
-			"id":    user.ID,
+			"uid":   user.ID,
 			"name":  user.Name,
 			"mail":  user.Mail,
 			"perm":  user.Perm,
